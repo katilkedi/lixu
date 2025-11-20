@@ -1,13 +1,14 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { RootStackParamList } from './src/constants/home-types';
+import { FontProvider } from './src/utils/FontContext';
+import { initTTS } from './src/utils/tts-init';
 
 import Onboarding from './src/screens/Onboarding';
 import Home from './src/screens/Home';
 import HowToUse from './src/screens/HowToUse';
-import Statistics from './src/screens/Statistic';
 import Settings from './src/screens/Settings';
 import Practice from './src/screens/Practice';
 import Story from './src/screens/Story';
@@ -16,9 +17,17 @@ import Game from './src/screens/Game';
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 export default function App() {
+  useEffect(() => {
+    // Initialize TTS when app starts
+    initTTS().catch((error) => {
+      console.log('TTS initialization error:', error);
+    });
+  }, []);
+
   return (
     <SafeAreaProvider>
-      <NavigationContainer>
+      <FontProvider>
+        <NavigationContainer>
         <Stack.Navigator initialRouteName="Onboarding">
         <Stack.Screen
           name="Onboarding"
@@ -37,13 +46,6 @@ export default function App() {
         <Stack.Screen
           name="HowToUse"
           component={HowToUse}
-          options={{
-            headerShown: false,
-          }}
-        />
-        <Stack.Screen
-          name="Statistics"
-          component={Statistics}
           options={{
             headerShown: false,
           }}
@@ -78,6 +80,7 @@ export default function App() {
         />
         </Stack.Navigator>
       </NavigationContainer>
+      </FontProvider>
     </SafeAreaProvider>
   );
 }

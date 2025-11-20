@@ -125,6 +125,24 @@ export const styles = StyleSheet.create({
     textAlign: "center",
     marginTop: 6,
   },
+  skipContainer: {
+    marginTop: 12,
+    padding: 12,
+    backgroundColor: "#FFF6E3",
+    borderRadius: 16,
+    alignItems: "center",
+  },
+  skipWarning: {
+    fontSize: 16,
+    color: COLORS.textDark,
+    textAlign: "center",
+    marginBottom: 8,
+    fontFamily: "OpenDyslexic-Regular",
+  },
+  skipButton: {
+    backgroundColor: "#FF6B6B",
+    minWidth: 100,
+  },
   buttonContainer: {
     marginTop: 16,
     flexDirection: "row",

@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, useState, useCallback, useMemo } from "react";
 import { View, Text, TouchableOpacity, Alert, StatusBar, ScrollView, Animated } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import Tts from "react-native-tts";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { words } from "../../constants/game-words";
 import { styles } from "./GameStyles";
@@ -12,9 +11,8 @@ import { generateWordPuzzle, generateSoundChallenge, generateLetterMatch, type W
 import { getTopScores, saveTopScore } from "../../utils/storage";
 import { useCooldown } from "../../utils/cooldown";
 import { playSuccessSound, playRecordSound, playCorrectAnswerSound } from "../../utils/sound-effects";
-
-Tts.setDefaultRate(0.3);
-Tts.setDefaultPitch(1.1);
+import { useFont } from "../../utils/FontContext";
+import { safeSpeak, safeSetDefaultRate, safeSetDefaultPitch } from "../../utils/tts-init";
 
 type Props = NativeStackScreenProps<RootStackParamList, "Game">;
 
@@ -33,8 +31,12 @@ const gameTabs = [
 // AI-generated questions will be created dynamically
 
 const Game: React.FC<Props> = ({ route, navigation }) => {
+  const { fontFamily } = useFont();
   const initialTab = route.params?.gameKey ?? "syllable";
   const [activeGame, setActiveGame] = useState<GameMode>(initialTab);
+  
+  // Dynamic font style
+  const fontStyle = { fontFamily: fontFamily === 'System' ? undefined : fontFamily };
   const [currentWordIndex, setCurrentWordIndex] = useState(0);
   const [selectedSyllables, setSelectedSyllables] = useState<string[]>([]);
   const [shuffledSyllables, setShuffledSyllables] = useState<string[]>(shuffleArray(words[0].syllables));
@@ -195,22 +197,22 @@ const Game: React.FC<Props> = ({ route, navigation }) => {
     if (activeGame === "word") {
       return (
         <View style={styles.puzzleCard}>
-          <Text style={styles.sectionTitle}>Kelime Bulmaca</Text>
+          <Text style={[styles.sectionTitle, fontStyle]}>Kelime Bulmaca</Text>
           {topScores.gameWord > 0 && (
-            <Text style={styles.topScoreText}>🏆 En Yüksek: {topScores.gameWord}</Text>
+            <Text style={[styles.topScoreText, fontStyle]}>🏆 En Yüksek: {topScores.gameWord}</Text>
           )}
-          <Text style={styles.puzzlePrompt}>{wordPuzzle.prompt}</Text>
-          <Text style={styles.puzzleHint}>{wordPuzzle.hint}</Text>
+          <Text style={[styles.puzzlePrompt, fontStyle]}>{wordPuzzle.prompt}</Text>
+          <Text style={[styles.puzzleHint, fontStyle]}>{wordPuzzle.hint}</Text>
           <View style={styles.puzzleOptions}>
             {shuffledWordOptions.map((option) => (
               <TouchableOpacity key={`word-${option}`} style={styles.puzzleOption} onPress={() => handleWordAnswer(option)}>
-                <Text style={styles.puzzleOptionLabel}>{option}</Text>
+                <Text style={[styles.puzzleOptionLabel, fontStyle]}>{option}</Text>
               </TouchableOpacity>
             ))}
           </View>
           <View style={styles.puzzleFooter}>
-            <Text style={styles.puzzleScore}>Puan: {wordScore}</Text>
-            {wordFeedback ? <Text style={styles.puzzleFeedback}>{wordFeedback}</Text> : null}
+            <Text style={[styles.puzzleScore, fontStyle]}>Puan: {wordScore}</Text>
+            {wordFeedback ? <Text style={[styles.puzzleFeedback, fontStyle]}>{wordFeedback}</Text> : null}
           </View>
         </View>
       );
@@ -219,21 +221,21 @@ const Game: React.FC<Props> = ({ route, navigation }) => {
     if (activeGame === "sound") {
       return (
         <View style={styles.puzzleCard}>
-          <Text style={styles.sectionTitle}>Ses Avı</Text>
+          <Text style={[styles.sectionTitle, fontStyle]}>Ses Avı</Text>
           {topScores.gameSound > 0 && (
-            <Text style={styles.topScoreText}>🏆 En Yüksek: {topScores.gameSound}</Text>
+            <Text style={[styles.topScoreText, fontStyle]}>🏆 En Yüksek: {topScores.gameSound}</Text>
           )}
-          <Text style={styles.puzzlePrompt}>{soundChallenge.letter} harfiyle başlayan kelime hangisi?</Text>
+          <Text style={[styles.puzzlePrompt, fontStyle]}>{soundChallenge.letter} harfiyle başlayan kelime hangisi?</Text>
           <View style={styles.puzzleOptions}>
             {shuffledSoundOptions.map((option) => (
               <TouchableOpacity key={`sound-${option}`} style={styles.puzzleOption} onPress={() => handleSoundAnswer(option)}>
-                <Text style={styles.puzzleOptionWord}>{option}</Text>
+                <Text style={[styles.puzzleOptionWord, fontStyle]}>{option}</Text>
               </TouchableOpacity>
             ))}
           </View>
           <View style={styles.puzzleFooter}>
-            <Text style={styles.puzzleScore}>Puan: {soundScore}</Text>
-            {soundFeedback ? <Text style={styles.puzzleFeedback}>{soundFeedback}</Text> : null}
+            <Text style={[styles.puzzleScore, fontStyle]}>Puan: {soundScore}</Text>
+            {soundFeedback ? <Text style={[styles.puzzleFeedback, fontStyle]}>{soundFeedback}</Text> : null}
           </View>
         </View>
       );
@@ -242,22 +244,22 @@ const Game: React.FC<Props> = ({ route, navigation }) => {
     if (activeGame === "letter") {
       return (
         <View style={styles.puzzleCard}>
-          <Text style={styles.sectionTitle}>Harf Çifti</Text>
+          <Text style={[styles.sectionTitle, fontStyle]}>Harf Çifti</Text>
           {topScores.gameLetter > 0 && (
-            <Text style={styles.topScoreText}>🏆 En Yüksek: {topScores.gameLetter}</Text>
+            <Text style={[styles.topScoreText, fontStyle]}>🏆 En Yüksek: {topScores.gameLetter}</Text>
           )}
-          <Text style={styles.puzzlePrompt}>{letterMatch.upper}</Text>
-          <Text style={styles.puzzleHint}>Bu harfin küçük hâlini seç</Text>
+          <Text style={[styles.puzzlePrompt, fontStyle]}>{letterMatch.upper}</Text>
+          <Text style={[styles.puzzleHint, fontStyle]}>Bu harfin küçük hâlini seç</Text>
           <View style={styles.puzzleOptions}>
             {shuffledLetterOptions.map((option) => (
               <TouchableOpacity key={`letter-${option}`} style={styles.puzzleOption} onPress={() => handleLetterAnswer(option)}>
-                <Text style={styles.puzzleOptionLabel}>{option}</Text>
+                <Text style={[styles.puzzleOptionLabel, fontStyle]}>{option}</Text>
               </TouchableOpacity>
             ))}
           </View>
           <View style={styles.puzzleFooter}>
-            <Text style={styles.puzzleScore}>Puan: {letterScore}</Text>
-            {letterFeedback ? <Text style={styles.puzzleFeedback}>{letterFeedback}</Text> : null}
+            <Text style={[styles.puzzleScore, fontStyle]}>Puan: {letterScore}</Text>
+            {letterFeedback ? <Text style={[styles.puzzleFeedback, fontStyle]}>{letterFeedback}</Text> : null}
           </View>
         </View>
       );
@@ -265,11 +267,11 @@ const Game: React.FC<Props> = ({ route, navigation }) => {
 
     return (
       <View style={styles.syllableCard}>
-        <Text style={styles.title}>Hece Oyunu</Text>
+        <Text style={[styles.title, fontStyle]}>Hece Oyunu</Text>
         {topScores.gameSyllable > 0 && (
-          <Text style={styles.topScoreText}>🏆 En Yüksek: {topScores.gameSyllable}</Text>
+          <Text style={[styles.topScoreText, fontStyle]}>🏆 En Yüksek: {topScores.gameSyllable}</Text>
         )}
-        <Text style={styles.wordTitle}>Heceleri sırayla seç</Text>
+        <Text style={[styles.wordTitle, fontStyle]}>Heceleri sırayla seç</Text>
 
         <WordDisplay 
           currentWordSyllables={currentWord.syllables} 
@@ -293,7 +295,7 @@ const Game: React.FC<Props> = ({ route, navigation }) => {
           <Text style={styles.scoreValue}>{syllableScore}</Text>
         </View>
 
-        <TouchableOpacity style={styles.ttsButton} onPress={withCooldown(() => Tts.speak(currentWord.word))}>
+        <TouchableOpacity style={styles.ttsButton} onPress={withCooldown(() => safeSpeak(currentWord.word))}>
           <Text style={styles.ttsText}>Kelimeyi oku</Text>
         </TouchableOpacity>
       </View>
@@ -313,8 +315,8 @@ const Game: React.FC<Props> = ({ route, navigation }) => {
             </TouchableOpacity>
             {/* ← GERİ BUTONU BİTİŞ */}
             
-            <Text style={styles.headerTitle}>Oyunlar</Text>
-            <Text style={styles.headerSubtitle}>Harf yakalama, kelime ve ses avı</Text>
+            <Text style={[styles.headerTitle, fontStyle]}>Oyunlar</Text>
+            <Text style={[styles.headerSubtitle, fontStyle]}>Harf yakalama, kelime ve ses avı</Text>
           </View>
 
           <View style={styles.card}>

@@ -144,6 +144,7 @@ export const styles = StyleSheet.create({
   stopButton: { backgroundColor: COLORS.stop },
   restartButton: { backgroundColor: COLORS.restart },
   ttsButton: { backgroundColor: COLORS.tts },
+  skipButton: { backgroundColor: "#FF6B6B" },
   buttonText: {
     color: "#FFFFFF",
     fontSize: 16,

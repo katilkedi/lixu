@@ -1,4 +1,4 @@
-import Tts from "react-native-tts";
+import { safeSpeak } from "../../utils/tts-init";
 import { words } from "../../constants/game-words";
 import { Alert } from "react-native";
 
@@ -45,7 +45,7 @@ export const handleSyllablePress = (
   const expected = currentWord.syllables[selectedSyllables.length];
   if (syllable === expected) {
     setSelectedSyllables([...selectedSyllables, syllable]);
-    Tts.speak(syllable);
+    safeSpeak(syllable);
 
     if (selectedSyllables.length + 1 === currentWord.syllables.length) {
       setScore(score + 1);

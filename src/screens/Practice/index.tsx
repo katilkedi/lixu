@@ -28,7 +28,9 @@ const Practice: React.FC<Props> = ({ route, navigation }) => {
   const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
   const [warning, setWarning] = useState<string>("");
   const [mistakeCount, setMistakeCount] = useState<number>(0);
+  const [currentWordMistakeCount, setCurrentWordMistakeCount] = useState<number>(0);
   const [finished, setFinished] = useState<boolean>(false);
+  const [lastProcessedTranscript, setLastProcessedTranscript] = useState<string>("");
   const [mathScore, setMathScore] = useState(0);
   const [mathFeedback, setMathFeedback] = useState<string | null>(null);
   const [mathQuestion, setMathQuestion] = useState<MathQuestion>(() => generateMathQuestion('medium', 0));
@@ -39,9 +41,8 @@ const Practice: React.FC<Props> = ({ route, navigation }) => {
   const withCooldown = useCooldown(500);
 
   const wordSets = useMemo(() => [
-    { title: "Basit Kelimeler (1 Hece)", words: getMeaningfulWords(15).filter(w => w.length <= 4) },
-    { title: "Orta Kelimeler (1-2 Hece)", words: getMeaningfulWords(20) },
-    { title: "Karma Kelimeler", words: getMeaningfulWords(25) },
+    { title: "Basit Kelimeler ", words: getMeaningfulWords(15).filter(w => w.length <= 4) },
+    { title: "Orta Kelimeler ", words: getMeaningfulWords(25) }
   ], []);
 
   useEffect(() => {
@@ -71,10 +72,31 @@ const Practice: React.FC<Props> = ({ route, navigation }) => {
     setRecognized("");
     setWarning("");
     setMistakeCount(0);
+    setCurrentWordMistakeCount(0);
     setFinished(false);
+    setLastProcessedTranscript("");
   }, []);
 
+  const handleSkipWord = useCallback(() => {
+    if (currentIndex < currentWords.length - 1) {
+      setCurrentIndex(currentIndex + 1);
+      setCurrentWordMistakeCount(0);
+      setWarning("");
+      setRecognized("");
+      setLastProcessedTranscript("");
+    }
+  }, [currentIndex, currentWords.length]);
+
   const isNumbersMode = mode === "numbers";
+
+  // Reset mistake count when word changes
+  useEffect(() => {
+    if (!isNumbersMode && !finished) {
+      setCurrentWordMistakeCount(0);
+      setWarning("");
+      setLastProcessedTranscript("");
+    }
+  }, [currentIndex, isNumbersMode, finished]);
 
   useEffect(() => {
     if (!transcript || isNumbersMode) return;
@@ -83,38 +105,51 @@ const Practice: React.FC<Props> = ({ route, navigation }) => {
     const words = norm.split(" ").filter(Boolean);
     const lastRaw = words[words.length - 1] || "";
 
+    // Boş veya aynı transcript'i tekrar işleme
+    if (!lastRaw || lastRaw === lastProcessedTranscript) return;
+
     setRecognized(lastRaw);
 
-    setCurrentIndex((prev) => {
-      const target = normalizeText(currentWords[prev] || "");
+    const target = normalizeText(currentWords[currentIndex] || "");
 
-      if (lastRaw === target && target.length > 0) {
-        setWarning("");
-        if (prev === currentWords.length - 1) {
-          setFinished(true);
-          stopListening();
-          const finalScore = currentWords.length - mistakeCount;
-          saveTopScore("practiceSyllable", finalScore).then((isNewRecord) => {
-            if (isNewRecord) {
-              setTopScore(finalScore);
-              playRecordSound();
-            }
-            playCompletionSound();
-          });
-          return prev;
-        }
-        return prev + 1;
+    if (lastRaw === target && target.length > 0) {
+      // Doğru söylendi - sayacı sıfırla
+      setWarning("");
+      setCurrentWordMistakeCount(0);
+      setLastProcessedTranscript(lastRaw);
+      
+      if (currentIndex === currentWords.length - 1) {
+        setFinished(true);
+        stopListening();
+        const finalScore = currentWords.length - mistakeCount;
+        saveTopScore("practiceSyllable", finalScore).then((isNewRecord) => {
+          if (isNewRecord) {
+            setTopScore(finalScore);
+            playRecordSound();
+          }
+          playCompletionSound();
+        });
       } else {
-        const msg = compareWords(target, lastRaw);
-        tutucu(target, lastRaw);
-        if (msg) {
-          setWarning(msg);
-          setMistakeCount((c) => c + 1);
-        }
-        return prev;
+        // Move to next word and reset mistake count
+        setCurrentIndex(currentIndex + 1);
+        setCurrentWordMistakeCount(0);
+        setLastProcessedTranscript("");
       }
-    });
-  }, [transcript, currentWords, stopListening, isNumbersMode, mistakeCount]);
+    } else if (lastRaw.length > 0 && lastRaw !== target) {
+      // Yanlış veya alakasız bir şey söylendi - sayacı artır
+      // Farklı bir yanlış kelime söylendiğinde sayacı artır
+      setLastProcessedTranscript(lastRaw);
+      const msg = compareWords(target, lastRaw);
+      tutucu(target, lastRaw);
+      if (msg) {
+        setWarning(msg);
+      } else {
+        // Tamamen alakasız bir şey söylendi
+      }
+      setMistakeCount((c) => c + 1);
+      setCurrentWordMistakeCount((c) => c + 1);
+    }
+  }, [transcript, currentWords, currentIndex, stopListening, isNumbersMode, mistakeCount, lastProcessedTranscript]);
 
   const handleSelectWordSet = (index: number) => {
     if (isNumbersMode) {
@@ -237,13 +272,18 @@ const Practice: React.FC<Props> = ({ route, navigation }) => {
           <View style={styles.feedbackCard}>
             <Text style={styles.recognized}>{recognized}</Text>
             {warning !== "" && <Text style={styles.warning}>{warning}</Text>}
-            <Text style={styles.counter}>Hata Sayısı: {mistakeCount}</Text>
             {finished && <Text style={styles.congrats}>🎉 Tebrikler, heceleri tamamladın! 🎉</Text>}
 
             <View style={styles.buttonContainer}>
               {!finished && (
                 <TouchableOpacity style={[styles.button, listening ? styles.stopButton : styles.startButton]} onPress={withCooldown(listening ? stopListening : startListening)}>
                   <Text style={styles.buttonText}>{listening ? "Durdur" : "Başlat"}</Text>
+                </TouchableOpacity>
+              )}
+
+              {currentWordMistakeCount >= 5 && !finished && (
+                <TouchableOpacity style={[styles.button, styles.skipButton]} onPress={withCooldown(handleSkipWord)}>
+                  <Text style={styles.buttonText}>Geç</Text>
                 </TouchableOpacity>
               )}
 

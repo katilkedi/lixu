@@ -3,7 +3,7 @@ import { Image, ScrollView, StatusBar, Text, View, TouchableOpacity, Modal } fro
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../constants/home-types';
-import { QuickActionBar, SectionGrid, InsightCard } from './HomeComponents';
+import { QuickActionBar, SectionGrid } from './HomeComponents';
 import { useHomeLogic, SectionItem, QuickAction } from './HomeLogic';
 import { styles } from './HomeStyles';
 import { mistakenLetters, generateStory } from '../Story/StoryLogic';
@@ -107,11 +107,9 @@ const Home = ({ navigation }: Props) => {
               <Text style={styles.mistakeAnalysisText}>
                 En çok karıştırılan harfler: {analyzeMistakenLetters(mistakenLetters).join(', ')}
               </Text>
-              <Text style={styles.mistakeAnalysisAction}>Özel hikaye oluştur →</Text>
+              <Text style={styles.mistakeAnalysisAction}>Özel alıştırma oluştur →</Text>
             </TouchableOpacity>
           )}
-          
-          <InsightCard onPress={() => navigation.navigate('Statistics')} />
         </ScrollView>
 
         <Modal visible={showMistakeAnalysis} transparent animationType="slide">
@@ -130,7 +128,7 @@ const Home = ({ navigation }: Props) => {
                   navigation.navigate('Story', { storyKey: aiStory.title });
                 })}
               >
-                <Text style={styles.modalButtonText}>✨ Özel Hikaye Oluştur</Text>
+                <Text style={styles.modalButtonText}>✨ Özel Alıştırma Oluştur</Text>
               </TouchableOpacity>
               <TouchableOpacity 
                 style={[styles.modalButton, styles.modalButtonSecondary]} 

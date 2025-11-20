@@ -1,4 +1,4 @@
-import Tts from "react-native-tts";
+import { safeSpeak } from "../../utils/tts-init";
 
 export const normalizeText = (t: string) =>
   t.toLowerCase().trim().replace(/[^a-zçğıöşü ]/gi, "");
@@ -26,5 +26,5 @@ export const tutucu = (expected: string, actual: string): void => {
 };
 
 export const speakWord = (word: string) => {
-  if (word) Tts.speak(word);
+  if (word) safeSpeak(word);
 };

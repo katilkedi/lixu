@@ -1,4 +1,4 @@
-import Tts from "react-native-tts";
+import { safeSpeak } from "../../utils/tts-init";
 
 export const normalizeText = (t: string) =>
   t.toLowerCase().trim().replace(/[^a-zçğıöşü ]/gi, "");
@@ -39,7 +39,7 @@ export async function generateStory(mistakenLetters: Record<string, number>): Pr
 }
 
 export const speakWord = (word: string) => {
-  if (word) Tts.speak(word);
+  if (word) safeSpeak(word);
 };
 
 export const speakSentence = (words: string[], startIndex: number, setHighlighted: (arr: number[]) => void) => {
@@ -54,7 +54,7 @@ export const speakSentence = (words: string[], startIndex: number, setHighlighte
 
   if (sentence.length > 0) {
     setHighlighted(indices);
-    Tts.speak(sentence.join(" "));
+    safeSpeak(sentence.join(" "));
     setTimeout(() => setHighlighted([]), sentence.length * 600);
   }
 };

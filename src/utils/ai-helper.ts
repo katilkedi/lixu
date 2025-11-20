@@ -28,20 +28,33 @@ export type LetterMatch = {
   answer: string;
 };
 
-// Turkish words database for meaningful words (1-2 syllables)
+// Disleksili çocuklar için özel hazırlanmış kelimeler
+// - Basit, kısa kelimeler (1-2 hece)
+// - Görsel ve somut nesneler
+// - Günlük hayatta sık kullanılan
+// - Benzer harflerden kaçınıldı
 const meaningfulWords: string[] = [
-  // 1 syllable
-  'el', 'al', 'at', 'su', 'güneş', 'ay', 'ev', 'araba', 'kedi', 'köpek',
-  'anne', 'baba', 'kardeş', 'okul', 'kitap', 'kalem', 'masa', 'sandalye',
-  'pencere', 'kapı', 'bahçe', 'ağaç', 'çiçek', 'kuş', 'balık', 'yumurta',
-  'ekmek', 'süt', 'peynir', 'elma', 'armut', 'portakal', 'muz', 'çilek',
-  // 2 syllables
-  'bebek', 'çocuk', 'öğrenci', 'öğretmen', 'doktor', 'hemşire', 'polis',
-  'itfaiye', 'hastane', 'market', 'bakkal', 'fırın', 'eczane', 'kütüphane',
-  'park', 'oyun', 'top', 'bisiklet', 'uçak', 'gemi', 'tren', 'otobüs',
-  'kırmızı', 'mavi', 'yeşil', 'sarı', 'mor', 'turuncu', 'pembe', 'siyah',
-  'beyaz', 'gri', 'kahverengi', 'büyük', 'küçük', 'uzun', 'kısa', 'yüksek',
-  'alçak', 'sıcak', 'soğuk', 'ılık', 'tatlı', 'ekşi', 'tuzlu', 'acı',
+  // 1 hece - En basit
+  'el', 'at', 'su', 'ay', 'ev', 'ok', 'gül', 'göl',
+  
+  // 2 hece - Basit ve görsel hayvanlar
+  'kedi', 'kuş', 'balık', 'ayı', 'aslan', 'fil', 'zürafa', 'köpek', 'tavşan', 'kaplan',
+  
+  // 2 hece - Basit ve görsel nesneler
+  'araba', 'masa', 'sandalye', 'kitap', 'kalem', 'top', 'oyun', 'bisiklet', 'uçak', 'gemi',
+  'tren', 'otobüs', 'kapı', 'pencere', 'bahçe', 'park', 'okul', 'ev',
+  
+  // 2 hece - Meyveler ve yiyecekler
+  'elma', 'armut', 'muz', 'portakal', 'çilek', 'ekmek', 'süt', 'peynir', 'yumurta',
+  
+  // 2 hece - Renkler
+  'kırmızı', 'mavi', 'yeşil', 'sarı', 'turuncu', 'pembe', 'siyah', 'beyaz',
+  
+  // 2 hece - Aile ve insanlar
+  'anne', 'baba', 'kardeş', 'çocuk', 'bebek', 'öğrenci', 'öğretmen',
+  
+  // 2 hece - Doğa
+  'güneş', 'yıldız', 'ağaç', 'çiçek', 'gül', 'göl', 'deniz',
 ];
 
 const consonants = ['b', 'c', 'ç', 'd', 'f', 'g', 'ğ', 'h', 'j', 'k', 'l', 'm', 'n', 'p', 'r', 's', 'ş', 't', 'v', 'y', 'z'];
@@ -273,8 +286,8 @@ export const generateStoryFromMistakes = async (mistakenLetters: Record<string, 
   }
   
   const title = topMistakes.length > 0 
-    ? `Özel Hikaye: ${topMistakes.join(', ')} Harfleriyle`
-    : 'Özel Pratik Hikayesi';
+    ? `Özel Alıştırma: ${topMistakes.join(', ')} Harfleriyle`
+    : 'Özel Pratik Alıştırma';
   
   return { title, words: storyWords };
 };

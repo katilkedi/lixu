@@ -42,6 +42,8 @@ const StoryScreen: React.FC<Props> = ({ navigation, route }) => {
   const [highlightedWords, setHighlightedWords] = useState<number[]>([]);
   const [sessionActive, setSessionActive] = useState(false);
   const [fontSize, setFontSize] = useState(24);
+  const [currentWordMistakeCount, setCurrentWordMistakeCount] = useState<number>(0);
+  const [lastProcessedTranscript, setLastProcessedTranscript] = useState<string>("");
   const withCooldown = useCooldown(500);
 
   useEffect(() => {
@@ -61,7 +63,19 @@ const StoryScreen: React.FC<Props> = ({ navigation, route }) => {
     setWarning("");
     setFinished(false);
     setHighlightedWords([]);
+    setCurrentWordMistakeCount(0);
+    setLastProcessedTranscript("");
   }, [stopListening]);
+
+  const handleSkipWord = useCallback(() => {
+    if (storyWords && storyWords.length > 0 && currentIndex < storyWords.length - 1) {
+      setCurrentIndex(currentIndex + 1);
+      setCurrentWordMistakeCount(0);
+      setWarning("");
+      setRecognized("");
+      setLastProcessedTranscript("");
+    }
+  }, [currentIndex, storyWords]);
 
   const applyStory = useCallback((index: number) => {
     setStoryIndex(index);
@@ -93,6 +107,15 @@ const StoryScreen: React.FC<Props> = ({ navigation, route }) => {
     }
   }, [listening, sessionActive]);
 
+  // Reset mistake count when word changes
+  useEffect(() => {
+    if (!finished) {
+      setCurrentWordMistakeCount(0);
+      setWarning("");
+      setLastProcessedTranscript("");
+    }
+  }, [currentIndex, finished]);
+
   useFocusEffect(
     useCallback(() => {
       return () => {
@@ -103,56 +126,68 @@ const StoryScreen: React.FC<Props> = ({ navigation, route }) => {
   );
 
   useEffect(() => {
-    if (!transcript || storyWords.length === 0) return;
+    if (!transcript || !storyWords || storyWords.length === 0) return;
 
     const norm = normalizeText(transcript);
     const words = norm.split(" ").filter(Boolean);
     const lastRaw = words[words.length - 1] || "";
     const fixed = normalizeWithMap(lastRaw);
 
+    // Boş veya aynı transcript'i tekrar işleme
+    if (!fixed || fixed === lastProcessedTranscript) return;
+
     setRecognized(fixed);
 
-    setCurrentIndex((prev) => {
-      const target = normalizeText(storyWords[prev] || "");
+    const target = normalizeText(storyWords[currentIndex] || "");
 
-      if (fixed === target && target.length > 0) {
-        setWarning("");
-        const nextIndex = prev === storyWords.length - 1 ? prev : prev + 1;
-        
-        // Auto-scroll to current word
-        if (scrollViewRef.current && nextIndex > 0) {
-          setTimeout(() => {
-            // Calculate approximate position
-            const wordsPerRow = 6;
-            const rowHeight = 60;
-            const targetRow = Math.floor(nextIndex / wordsPerRow);
-            scrollViewRef.current?.scrollTo({ y: targetRow * rowHeight, animated: true });
-          }, 100);
-        }
-        
-        if (prev === storyWords.length - 1) {
-          setFinished(true);
-          stopListening();
-          const finalScore = storyWords.length;
-          saveTopScore("story", finalScore).then((isNewRecord) => {
-            if (isNewRecord) {
-              playRecordSound();
-            }
-            playCompletionSound();
-          });
-          return prev;
-        }
-        return nextIndex;
-      } else {
-        const msg = compareWords(target, fixed);
-        tutucu(target, fixed);
-        if (msg) {
-          setWarning(msg);
-        }
-        return prev;
+    if (fixed === target && target.length > 0) {
+      // Doğru söylendi - sayacı sıfırla
+      setWarning("");
+      setCurrentWordMistakeCount(0);
+      setLastProcessedTranscript(fixed);
+      
+      const nextIndex = currentIndex === storyWords.length - 1 ? currentIndex : currentIndex + 1;
+      
+      // Auto-scroll to current word
+      if (scrollViewRef.current && nextIndex > 0) {
+        setTimeout(() => {
+          // Calculate approximate position
+          const wordsPerRow = 6;
+          const rowHeight = 60;
+          const targetRow = Math.floor(nextIndex / wordsPerRow);
+          scrollViewRef.current?.scrollTo({ y: targetRow * rowHeight, animated: true });
+        }, 100);
       }
-    });
-  }, [transcript, storyWords, stopListening]);
+      
+      if (currentIndex === storyWords.length - 1) {
+        setFinished(true);
+        stopListening();
+        const finalScore = storyWords.length;
+        saveTopScore("story", finalScore).then((isNewRecord) => {
+          if (isNewRecord) {
+            playRecordSound();
+          }
+          playCompletionSound();
+        });
+      } else {
+        // Move to next word and reset mistake count
+        setCurrentIndex(nextIndex);
+        setCurrentWordMistakeCount(0);
+        setLastProcessedTranscript("");
+      }
+    } else if (fixed.length > 0 && fixed !== target) {
+      // Yanlış veya alakasız bir şey söylendi - sayacı artır
+      setLastProcessedTranscript(fixed);
+      const msg = compareWords(target, fixed);
+      tutucu(target, fixed);
+      if (msg) {
+        setWarning(msg);
+      } else {
+        // Tamamen alakasız bir şey söylendi
+      }
+      setCurrentWordMistakeCount((c) => c + 1);
+    }
+  }, [transcript, storyWords, currentIndex, stopListening, lastProcessedTranscript]);
 
   return (
     <SafeAreaView edges={["top", "left", "right"]} style={styles.safeArea}>
@@ -169,7 +204,7 @@ const StoryScreen: React.FC<Props> = ({ navigation, route }) => {
         </View>
 
         <View style={styles.card}>
-          <Text style={styles.title}>📖 {stories[storyIndex].title}</Text>
+          <Text style={styles.title}>📖 {stories[storyIndex]?.title || "Hikaye"}</Text>
 
           <StoryModal
             visible={isModalVisible}
@@ -187,7 +222,7 @@ const StoryScreen: React.FC<Props> = ({ navigation, route }) => {
             showsVerticalScrollIndicator={false}
           >
             <View style={styles.storyContainer}>
-              {(() => {
+              {storyWords && storyWords.length > 0 ? (() => {
                 // Group words into sentences
                 const sentences: number[][] = [];
                 let currentSentence: number[] = [];
@@ -222,7 +257,7 @@ const StoryScreen: React.FC<Props> = ({ navigation, route }) => {
                     />
                   );
                 });
-              })()}
+              })() : null}
             </View>
           </ScrollView>
         </View>
@@ -242,15 +277,21 @@ const StoryScreen: React.FC<Props> = ({ navigation, route }) => {
               </TouchableOpacity>
             )}
 
+            {currentWordMistakeCount >= 5 && !finished && (
+              <TouchableOpacity style={[styles.button, styles.skipButton]} onPress={withCooldown(handleSkipWord)}>
+                <Text style={styles.buttonText}>Geç</Text>
+              </TouchableOpacity>
+            )}
+
             <TouchableOpacity style={[styles.button, styles.restartButton]} onPress={withCooldown(restart)}>
               <Text style={styles.buttonText}>Baştan başla</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity style={[styles.button, styles.ttsButton]} onPress={withCooldown(() => speakWord(storyWords[currentIndex] || ""))}>
+            <TouchableOpacity style={[styles.button, styles.ttsButton]} onPress={withCooldown(() => storyWords && speakWord(storyWords[currentIndex] || ""))}>
               <Text style={styles.buttonText}>Kelime oku</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity style={[styles.button, styles.ttsButton]} onPress={withCooldown(() => speakSentence(storyWords, currentIndex, setHighlightedWords))}>
+            <TouchableOpacity style={[styles.button, styles.ttsButton]} onPress={withCooldown(() => storyWords && speakSentence(storyWords, currentIndex, setHighlightedWords))}>
               <Text style={styles.buttonText}>Cümle oku</Text>
             </TouchableOpacity>
           </View>

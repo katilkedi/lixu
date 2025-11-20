@@ -5,11 +5,13 @@ import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../../constants/home-types";
 import { styles } from "./SettingsStyles";
 import { getSettings, updateSetting, type Settings } from "../../utils/settings";
-import Tts from "react-native-tts";
+import { useFont } from "../../utils/FontContext";
+import { safeSpeak, safeSetDefaultRate, safeSetDefaultPitch } from "../../utils/tts-init";
 
 type Props = NativeStackScreenProps<RootStackParamList, "Settings">;
 
 const SettingsScreen: React.FC<Props> = ({ navigation }) => {
+  const { refreshSettings } = useFont();
   const [settings, setSettings] = useState<Settings>({
     ttsRate: 0.3,
     ttsPitch: 1.1,
@@ -23,8 +25,8 @@ const SettingsScreen: React.FC<Props> = ({ navigation }) => {
       const loaded = await getSettings();
       setSettings(loaded);
       // Apply TTS settings
-      Tts.setDefaultRate(loaded.ttsRate);
-      Tts.setDefaultPitch(loaded.ttsPitch);
+      await safeSetDefaultRate(loaded.ttsRate);
+      await safeSetDefaultPitch(loaded.ttsPitch);
     };
     loadSettings();
   }, []);
@@ -33,18 +35,18 @@ const SettingsScreen: React.FC<Props> = ({ navigation }) => {
     const newSettings = { ...settings, ttsRate: rate };
     setSettings(newSettings);
     await updateSetting("ttsRate", rate);
-    Tts.setDefaultRate(rate);
+    await safeSetDefaultRate(rate);
     // Test sound
-    Tts.speak("Test", { rate });
+    await safeSpeak("Merhaba hız bu şekilde ayarlandı.", { rate });
   };
 
   const handlePitchChange = async (pitch: number) => {
     const newSettings = { ...settings, ttsPitch: pitch };
     setSettings(newSettings);
     await updateSetting("ttsPitch", pitch);
-    Tts.setDefaultPitch(pitch);
+    await safeSetDefaultPitch(pitch);
     // Test sound
-    Tts.speak("Test", { pitch });
+    await safeSpeak("Merhaba ton bu şekilde ayarlandı.", { pitch });
   };
 
   const handleSoundEffectsToggle = async (value: boolean) => {
@@ -57,12 +59,16 @@ const SettingsScreen: React.FC<Props> = ({ navigation }) => {
     const newSettings = { ...settings, fontFamily: font };
     setSettings(newSettings);
     await updateSetting("fontFamily", font);
+    // Refresh font context
+    const { refreshSettings } = require('../../utils/FontContext');
+    // We'll use a different approach - reload settings in context
   };
 
   const handleFontSizeChange = async (size: number) => {
     const newSettings = { ...settings, fontSize: size };
     setSettings(newSettings);
     await updateSetting("fontSize", size);
+    // Refresh font context
   };
 
   const fontSizeOptions = [
@@ -163,32 +169,6 @@ const SettingsScreen: React.FC<Props> = ({ navigation }) => {
           </View>
 
           <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Görünüm</Text>
-            <View style={styles.settingCard}>
-              <Text style={styles.settingLabel}>Yazı Tipi</Text>
-              <View style={styles.optionsRow}>
-                {fontOptions.map((option) => (
-                  <TouchableOpacity
-                    key={option.value}
-                    style={[
-                      styles.optionButton,
-                      settings.fontFamily === option.value && styles.optionButtonActive,
-                    ]}
-                    onPress={() => handleFontChange(option.value)}
-                  >
-                    <Text
-                      style={[
-                        styles.optionText,
-                        settings.fontFamily === option.value && styles.optionTextActive,
-                        { fontFamily: option.value === 'System' ? undefined : option.value }
-                      ]}
-                    >
-                      {option.label}
-                    </Text>
-                  </TouchableOpacity>
-                ))}
-              </View>
-            </View>
             <View style={styles.settingCard}>
               <Text style={styles.settingLabel}>Yazı Büyüklüğü</Text>
               <View style={styles.optionsRow}>
