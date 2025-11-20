@@ -1,0 +1,257 @@
+import { StyleSheet, Dimensions } from "react-native";
+
+const { width } = Dimensions.get("window");
+const COLORS = {
+  background: "#FFC400",
+  panel: "#FFEFD2",
+  deepBrown: "#3A2B26",
+  midBrown: "#4F3D39",
+  accent: "#FF7A28",
+  textDark: "#3A2B26",
+  textLight: "#FFEFD2",
+};
+
+export const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+    backgroundColor: COLORS.deepBrown,
+  },
+  backButton: {
+    width: 44,
+    height: 44,
+    borderRadius: 16,
+    backgroundColor: COLORS.midBrown,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  backText: {
+    color: COLORS.panel,
+    fontSize: 24,
+    fontWeight: "bold",
+  },
+
+  container: {
+    flex: 1,
+    backgroundColor: COLORS.background,
+  },
+  header: {
+    backgroundColor: COLORS.deepBrown,
+    borderBottomLeftRadius: 32,
+    borderBottomRightRadius: 32,
+    paddingHorizontal: 24,
+    paddingVertical: 22,
+  },
+  headerTitle: {
+    color: COLORS.panel,
+    fontSize: 28,
+    fontFamily: "Lexend-SemiBold",
+  },
+  headerSubtitle: {
+    color: COLORS.textLight,
+    fontSize: 16,
+    marginTop: 6,
+    fontFamily: "OpenDyslexic-Regular",
+  },
+  tabRow: {
+    paddingHorizontal: 20,
+    paddingVertical: 16,
+    gap: 8,
+  },
+  tabButton: {
+    width: 140,
+    backgroundColor: "#FFE4C4",
+    borderRadius: 22,
+    padding: 12,
+    marginRight: 10,
+    justifyContent: "center",
+    alignItems: "flex-start",
+    gap: 2,
+  },
+  tabButtonActive: {
+    backgroundColor: COLORS.panel,
+    borderWidth: 2,
+    borderColor: COLORS.accent,
+  },
+  tabIcon: {
+    fontSize: 20,
+  },
+  tabTitle: {
+    fontSize: 14,
+    fontFamily: "Lexend-SemiBold",
+    color: COLORS.textDark,
+  },
+  tabDesc: {
+    fontSize: 11,
+    color: COLORS.textDark,
+    fontFamily: "OpenDyslexic-Regular",
+  },
+  card: {
+    flex: 1,
+    backgroundColor: COLORS.panel,
+    marginTop: -10,
+    marginHorizontal: 20,
+    borderRadius: 28,
+    padding: 20,
+    elevation: 5,
+    overflow: "hidden",
+  },
+  successOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: "#6DD76D",
+    opacity: 0,
+  },
+  syllableCard: {
+    flex: 1,
+    alignItems: "center",
+  },
+  title: {
+    fontSize: 26,
+    fontFamily: "Lexend-SemiBold",
+    color: COLORS.textDark,
+    marginBottom: 4,
+  },
+  wordTitle: {
+    fontSize: 18,
+    color: COLORS.textDark,
+    marginBottom: 16,
+    fontFamily: "AtkinsonHyperlegible-Regular",
+  },
+  wordContainer: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    justifyContent: "center",
+    alignItems: "center",
+    marginBottom: 20,
+  },
+  wordEmoji: {
+    fontSize: 40,
+    marginRight: 12,
+  },
+  syllableBox: {
+    width: width * 0.14,
+    height: width * 0.14,
+    borderRadius: 20,
+    backgroundColor: "#FFF6E3",
+    borderWidth: 2,
+    borderColor: COLORS.accent,
+    justifyContent: "center",
+    alignItems: "center",
+    margin: 6,
+  },
+  syllableText: {
+    fontSize: 20,
+    fontWeight: "600",
+    color: COLORS.textDark,
+  },
+  syllableListContainer: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    justifyContent: "center",
+    paddingVertical: 8,
+    gap: 8,
+  },
+  syllableButton: {
+    backgroundColor: COLORS.accent,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    borderRadius: 18,
+    minWidth: 82,
+    alignItems: "center",
+  },
+  scoreRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    width: "100%",
+    marginTop: 12,
+    paddingHorizontal: 12,
+  },
+  scoreLabel: {
+    fontSize: 18,
+    color: COLORS.textDark,
+    fontFamily: "Lexend-Medium",
+  },
+  scoreValue: {
+    fontSize: 22,
+    color: COLORS.deepBrown,
+    fontFamily: "Lexend-Bold",
+  },
+  ttsButton: {
+    marginTop: 16,
+    backgroundColor: COLORS.deepBrown,
+    borderRadius: 20,
+    paddingVertical: 14,
+    paddingHorizontal: 30,
+  },
+  ttsText: {
+    fontSize: 18,
+    fontWeight: "bold",
+    color: COLORS.panel,
+  },
+  sectionTitle: {
+    fontSize: 22,
+    fontFamily: "Lexend-SemiBold",
+    color: COLORS.textDark,
+    marginBottom: 12,
+  },
+  puzzleCard: {
+    flex: 1,
+    gap: 16,
+  },
+  puzzlePrompt: {
+    fontSize: 28,
+    color: COLORS.textDark,
+    fontFamily: "Lexend-SemiBold",
+    textAlign: "center",
+  },
+  puzzleHint: {
+    textAlign: "center",
+    fontFamily: "OpenDyslexic-Regular",
+    color: COLORS.textDark,
+    fontSize: 16,
+  },
+  puzzleOptions: {
+    flexDirection: "row",
+    gap: 12,
+  },
+  puzzleOption: {
+    flex: 1,
+    backgroundColor: COLORS.accent,
+    borderRadius: 20,
+    paddingVertical: 16,
+    alignItems: "center",
+  },
+  puzzleOptionLabel: {
+    fontSize: 22,
+    fontFamily: "Lexend-Bold",
+    color: COLORS.deepBrown,
+  },
+  puzzleOptionWord: {
+    fontSize: 18,
+    fontFamily: "Lexend-SemiBold",
+    color: COLORS.deepBrown,
+  },
+  puzzleFooter: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  puzzleScore: {
+    fontSize: 18,
+    color: COLORS.textDark,
+    fontFamily: "Lexend-SemiBold",
+  },
+  topScoreText: {
+    fontSize: 14,
+    color: COLORS.accent,
+    textAlign: "center",
+    fontFamily: "Lexend-SemiBold",
+    marginBottom: 8,
+  },
+  puzzleFeedback: {
+    fontSize: 16,
+    color: COLORS.textDark,
+    fontFamily: "OpenDyslexic-Regular",
+    flex: 1,
+    textAlign: "right",
+  },
+});
