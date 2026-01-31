@@ -1,97 +1,136 @@
-This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
+🧠📱 Easy Peasy Dyslexia
+AI-Supported Interactive Reading App for Children with Dyslexia (6–12)
 
-# Getting Started
+TÜBİTAK Araştırma Projesi | Açık Kaynak Mobil Uygulama
 
-> **Note**: Make sure you have completed the [Set Up Your Environment](https://reactnative.dev/docs/set-up-your-environment) guide before proceeding.
+Easy Peasy Dyslexia, 6–12 yaş arası disleksili (veya disleksi şüphesi bulunan) çocukların okuma becerilerini geliştirmek amacıyla geliştirilmiş, yapay zekâ destekli, sesli etkileşimli ve erişilebilir bir mobil okuma uygulamasıdır.
 
-## Step 1: Start Metro
+Bu proje, disleksili bireyler için ücretsiz, erişilebilir ve bireyselleştirilmiş bir öğrenme deneyimi sunmayı hedefler.
 
-First, you will need to run **Metro**, the JavaScript build tool for React Native.
+🎯 Projenin Amacı
 
-To start the Metro dev server, run the following command from the root of your React Native project:
+Disleksili öğrencilerin harf karıştırma ve okuma hatalarını azaltmak
 
-```sh
-# Using npm
-npm start
+Okuma hızını, akıcılığı ve okuma motivasyonunu artırmak
 
-# OR using Yarn
-yarn start
-```
+Öğretmen veya veli müdahalesi olmadan anlık geri bildirim sağlayabilen bir sistem sunmak
 
-## Step 2: Build and run your app
+Yapay zekâ destekli kişiselleştirilmiş alıştırmalar üretmek
 
-With Metro running, open a new terminal window/pane from the root of your React Native project, and use one of the following commands to build and run your Android or iOS app:
+Eğitimde fırsat eşitliğini desteklemek
 
-### Android
+🧩 Temel Özellikler
+🔊 Sesli Etkileşimli Okuma
 
-```sh
-# Using npm
-npm run android
+Cihaz içi STT (Speech-to-Text) ile öğrencinin okuması analiz edilir
 
-# OR using Yarn
-yarn android
-```
+Levenshtein Mesafe Algoritması ile hedef metin karşılaştırılır
 
-### iOS
+Harf, hece ve kelime bazlı hata analizi yapılır
 
-For iOS, remember to install CocoaPods dependencies (this only needs to be run on first clone or after updating native deps).
+🤖 Yapay Zekâ Destekli Kişiselleştirme
 
-The first time you create a new project, run the Ruby bundler to install CocoaPods itself:
+Öğrencinin hata örüntüleri analiz edilir
 
-```sh
-bundle install
-```
+En sık karıştırılan harf ve hecelere özel kişiselleştirilmiş alıştırmalar oluşturulur
 
-Then, and every time you update your native dependencies, run:
+Gemini-2.0-Flash modeli pedagojik yorumlayıcı olarak kullanılır
 
-```sh
-bundle exec pod install
-```
+🎮 Oyunlaştırılmış Öğrenme
 
-For more information, please visit [CocoaPods Getting Started guide](https://guides.cocoapods.org/using/getting-started.html).
+Hece Oyunu
 
-```sh
-# Using npm
-npm run ios
+Harf Çifti Eşleştirme
 
-# OR using Yarn
-yarn ios
-```
+Ses Avı
 
-If everything is set up correctly, you should see your new app running in the Android Emulator, iOS Simulator, or your connected device.
+Kelime Bulmaca
 
-This is one way to run your app — you can also build it directly from Android Studio or Xcode.
+📖 Hikâye Okuma Modu
 
-## Step 3: Modify your app
+Gölgeli okuma (shadow reading)
 
-Now that you have successfully run the app, let's make changes!
+Renklendirilmiş harfler
 
-Open `App.tsx` in your text editor of choice and make some changes. When you save, your app will automatically update and reflect these changes — this is powered by [Fast Refresh](https://reactnative.dev/docs/fast-refresh).
+Doğru okuma → ilerleme, yanlış okuma → tekrar
 
-When you want to forcefully reload, for example to reset the state of your app, you can perform a full reload:
+📊 İlerleme & İstatistik
 
-- **Android**: Press the <kbd>R</kbd> key twice or select **"Reload"** from the **Dev Menu**, accessed via <kbd>Ctrl</kbd> + <kbd>M</kbd> (Windows/Linux) or <kbd>Cmd ⌘</kbd> + <kbd>M</kbd> (macOS).
-- **iOS**: Press <kbd>R</kbd> in iOS Simulator.
+Puan ve seviye sistemi
 
-## Congratulations! :tada:
+Öğrenciye özel gelişim grafikleri
 
-You've successfully run and modified your React Native App. :partying_face:
+Yerel veri saklama (KVKK uyumlu)
 
-### Now what?
+🛠️ Kullanılan Teknolojiler
 
-- If you want to add this new React Native code to an existing application, check out the [Integration guide](https://reactnative.dev/docs/integration-with-existing-apps).
-- If you're curious to learn more about React Native, check out the [docs](https://reactnative.dev/docs/getting-started).
+React Native
 
-# Troubleshooting
+TypeScript
 
-If you're having issues getting the above steps to work, see the [Troubleshooting](https://reactnative.dev/docs/troubleshooting) page.
+React Navigation
 
-# Learn More
+react-native-voicekit (Offline STT)
 
-To learn more about React Native, take a look at the following resources:
+react-native-tts
 
-- [React Native Website](https://reactnative.dev) - learn more about React Native.
-- [Getting Started](https://reactnative.dev/docs/environment-setup) - an **overview** of React Native and how setup your environment.
-- [Learn the Basics](https://reactnative.dev/docs/getting-started) - a **guided tour** of the React Native **basics**.
-- [Blog](https://reactnative.dev/blog) - read the latest official React Native **Blog** posts.
-- [`@facebook/react-native`](https://github.com/facebook/react-native) - the Open Source; GitHub **repository** for React Native.
+AsyncStorage
+
+Gemini-2.0-Flash (isteğe bağlı AI analiz)
+
+Levenshtein Distance Algorithm
+
+🧠 Uygulama Mimarisi (Özet)
+
+Ses kaydı alınır
+
+STT ile metne dönüştürülür
+
+Güven skoru filtresi uygulanır
+
+Levenshtein algoritması ile hata analizi yapılır
+
+İsteğe bağlı olarak AI katmanına gönderilir
+
+Kişiselleştirilmiş alıştırmalar oluşturulur
+
+🔐 Gizlilik & Etik
+
+Hiçbir kişisel veri saklanmaz
+
+Tüm analizler anonim yapılır
+
+KVKK ve etik kurallara tam uyumludur
+
+Veriler yalnızca cihaz üzerinde tutulur
+
+📱 Platform Desteği
+Platform	Durum
+Android	✅ Destekleniyor (API 24+)
+iOS	🚧 Planlanıyor
+
+Minimum Android sürümü: 7.0
+
+Uygulama boyutu: ~56 MB
+
+Temel özellikler offline çalışır
+
+🚀 Kurulum
+git clone https://github.com/kullanici-adi/easy-peasy-dyslexia.git
+cd easy-peasy-dyslexia
+npm install
+npx expo start
+
+📄 TÜBİTAK Bağlamı
+
+Bu proje, TÜBİTAK’ın Yapay Zekâ, Eğitim ve E-Öğrenme öncelikli Ar-Ge alanlarıyla doğrudan uyumludur ve saha testleri Manisa / Yunusemre ilçesinde gerçekleştirilmiştir.
+
+🤝 Katkı Sağlamak
+
+Pull request’ler, issue’lar ve öneriler sonuna kadar açık.
+Pedagoji, özel eğitim, mobil geliştirme veya yapay zekâ tarafında katkı sunmak isteyen herkes davetlidir.
+
+📜 Lisans
+
+Bu proje açık kaynak olarak paylaşılmaktadır.
+Lisans: MIT
