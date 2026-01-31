@@ -19,23 +19,29 @@ Bu proje, disleksili bireyler için **ücretsiz**, **erişilebilir** ve
 
 ### 🏠 Ana Ekran
 <p align="center">
-  <img src="screenshots/home.jpg" width="280">
-  <img src="screenshots/home2.jpg" width="280">
+  <img src="screenshots/home.jpg" width="250">
+  <img src="screenshots/home2.jpg" width="250">
 </p>
 
 ### 📖 Sesli Etkileşimli Hikâye Okuma
 <p align="center">
-  <img src="screenshots/stories.jpg" width="300">
+  <img src="screenshots/stories.jpg" width="250">
 </p>
 
 ### 🎮 Oyun ve Pratik Modülleri
 <p align="center">
-  <img src="screenshots/games.jpg" width="300">
+  <img src="screenshots/game1.jpg" width="250">
+  <img src="screenshots/game2.jpg" width="250">
+</p>
+<p align="center">
+  <img src="screenshots/game3.jpg" width="250">
+  <img src="screenshots/game4.jpg" width="250">
 </p>
 
 ### 📊 İstatistik ve Hata Analizi
 <p align="center">
-  <img src="screenshots/statistic.jpg" width="300">
+  <img src="screenshots/statistic.jpg" width="250">
+  <img src="screenshots/statistic2.jpg" width="250">
 </p>
 
 ---
