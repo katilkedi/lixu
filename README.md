@@ -18,18 +18,16 @@ Bu proje, disleksili bireyler için **ücretsiz**, **erişilebilir** ve
 > Aşağıdaki görseller uygulamanın gerçek kullanım arayüzünü göstermektedir.
 
 ### 🏠 Ana Ekran
-![Ana Ekran](screenshots/home.png)
+![Ana Ekran](screenshots/home.jpg)
 
 ### 📖 Sesli Etkileşimli Hikâye Okuma
-![Hikâye Okuma](screenshots/story.png)
+![Hikâye Okuma](screenshots/stories.jpg)
 
 ### 🎮 Oyun ve Pratik Modülleri
-![Oyunlar](screenshots/games.png)
+![Oyunlar](screenshots/games.jph)
 
 ### 📊 İstatistik ve Hata Analizi
-![İstatistikler](screenshots/stats.png)
-
-> ℹ️ `screenshots/` klasörü oluşturup görselleri buraya ekleyebilirsin.
+![İstatistikler](screenshots/statsistic.jpg)
 
 ---
 
