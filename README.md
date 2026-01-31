@@ -18,16 +18,25 @@ Bu proje, disleksili bireyler için **ücretsiz**, **erişilebilir** ve
 > Aşağıdaki görseller uygulamanın gerçek kullanım arayüzünü göstermektedir.
 
 ### 🏠 Ana Ekran
-![Ana Ekran](<img src="screenshots/home.jpg" width="300">)
+<p align="center">
+  <img src="screenshots/home.jpg" width="280">
+  <img src="screenshots/home2.jpg" width="280">
+</p>
 
 ### 📖 Sesli Etkileşimli Hikâye Okuma
-![Hikâye Okuma](<img src="screenshots/stories.jpg" width="300">)
+<p align="center">
+  <img src="screenshots/stories.jpg" width="300">
+</p>
 
 ### 🎮 Oyun ve Pratik Modülleri
-![Oyunlar](<img src="screenshots/games.jpg" width="300">)
+<p align="center">
+  <img src="screenshots/games.jpg" width="300">
+</p>
 
 ### 📊 İstatistik ve Hata Analizi
-![İstatistikler](<img src="screenshots/statistic.jpg" width="300">)
+<p align="center">
+  <img src="screenshots/statistic.jpg" width="300">
+</p>
 
 ---
 
@@ -118,6 +127,14 @@ Bu proje, disleksili bireyler için **ücretsiz**, **erişilebilir** ve
 ---
 
 ## 🚀 Kurulum
+
+### Gereksinimler
+- Node.js (>= 18)
+- npm veya yarn
+- Expo CLI
+- Android Studio (Android için)
+
+### Kurulum Adımları
 
 ```bash
 git clone https://github.com/kullanici-adi/easy-peasy-dyslexia.git
